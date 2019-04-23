@@ -17,19 +17,9 @@ package net.sf.log4jdbc;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.DriverPropertyInfo;
-import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
+import java.sql.*;
+import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * A JDBC driver which is a facade that delegates to one or more real underlying
@@ -478,6 +468,7 @@ public class DriverSpy implements Driver
 			subDrivers.add("com.informix.jdbc.IfxDriver");
 			subDrivers.add("org.apache.derby.jdbc.ClientDriver");
 			subDrivers.add("org.apache.derby.jdbc.EmbeddedDriver");
+			subDrivers.add("com.mysql.cj.jdbc.Driver");
 			subDrivers.add("com.mysql.jdbc.Driver");
 			subDrivers.add("org.postgresql.Driver");
 			subDrivers.add("org.hsqldb.jdbcDriver");
@@ -545,6 +536,7 @@ public class DriverSpy implements Driver
 		rdbmsSpecifics.put("com.microsoft.jdbc.sqlserver.SQLServerDriver",
 			sqlServer);
 		rdbmsSpecifics.put("weblogic.jdbc.sqlserver.SQLServerDriver", sqlServer);
+		rdbmsSpecifics.put("com.mysql.cj.jdbc.Driver", mySql);
 		rdbmsSpecifics.put("com.mysql.jdbc.Driver", mySql);
 
 		log.debug("... log4jdbc initialized! ...");
@@ -642,6 +634,11 @@ public class DriverSpy implements Driver
 	{
 		return lastUnderlyingDriverRequested != null &&
 			lastUnderlyingDriverRequested.jdbcCompliant();
+	}
+
+	@Override
+	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+		return null;
 	}
 
 	/**
